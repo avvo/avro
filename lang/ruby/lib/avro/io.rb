@@ -39,6 +39,8 @@ module Avro
       # reader is an object on which we can call read, seek and tell.
       attr_reader :reader
       def initialize(reader)
+        #Explicitly call out binary formatting
+        reader.set_encoding(Encoding::ASCII_8BIT)
         @reader = reader
       end
 
@@ -151,6 +153,8 @@ module Avro
       attr_reader :writer
 
       def initialize(writer)
+        #Explicitly call out binary formatting
+        writer.set_encoding(Encoding::ASCII_8BIT)
         @writer = writer
       end
 
