@@ -149,7 +149,7 @@ module Avro::IPC
 
       message = local_protocol.messages[message_name]
       unless message
-        raise AvroError, "Unknown message: #{message_name}"
+        raise Avro::AvroError, "Unknown message: #{message_name}"
       end
       encoder.write_string(message.name)
 
@@ -170,18 +170,18 @@ module Avro::IPC
         self.send_protocol = false
         we_have_matching_schema = true
       when 'CLIENT'
-        raise AvroError.new('Handshake failure. match == CLIENT') if send_protocol
+        raise Avro::AvroError.new('Handshake failure. match == CLIENT') if send_protocol
         self.remote_protocol = Avro::Protocol.parse(handshake_response['serverProtocol'])
         self.remote_hash = handshake_response['serverHash']
         self.send_protocol = false
         we_have_matching_schema = true
       when 'NONE'
-        raise AvroError.new('Handshake failure. match == NONE') if send_protocol
+        raise Avro::AvroError.new('Handshake failure. match == NONE') if send_protocol
         self.remote_protocol = Avro::Protocol.parse(handshake_response['serverProtocol'])
         self.remote_hash = handshake_response['serverHash']
         self.send_protocol = true
       else
-        raise AvroError.new("Unexpected match: #{match}")
+        raise Avro::AvroError.new("Unexpected match: #{match}")
       end
 
       return we_have_matching_schema
@@ -199,12 +199,12 @@ module Avro::IPC
 
       # remote response schema
       remote_message_schema = remote_protocol.messages[message_name]
-      raise AvroError.new("Unknown remote message: #{message_name}") unless remote_message_schema
+      raise Avro::AvroError.new("Unknown remote message: #{message_name}") unless remote_message_schema
 
       # local response schema
       local_message_schema = local_protocol.messages[message_name]
       unless local_message_schema
-        raise AvroError.new("Unknown local message: #{message_name}")
+        raise Avro::AvroError.new("Unknown local message: #{message_name}")
       end
 
       # error flag
@@ -264,11 +264,11 @@ module Avro::IPC
         # schema resolution (one fine day)
         remote_message = remote_protocol.messages[remote_message_name]
         unless remote_message
-          raise AvroError.new("Unknown remote message: #{remote_message_name}")
+          raise Avro::AvroError.new("Unknown remote message: #{remote_message_name}")
         end
         local_message = local_protocol.messages[remote_message_name]
         unless local_message
-          raise AvroError.new("Unknown local message: #{remote_message_name}")
+          raise Avro::AvroError.new("Unknown local message: #{remote_message_name}")
         end
         writers_schema = remote_message.request
         readers_schema = local_message.request
